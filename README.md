@@ -1,6 +1,4 @@
-# test
-# test
+# Mitt första Canvas-spel
 
-Ett simpelt spel.
 
 klicka på dom gula bollarna så blir dom gröna.
