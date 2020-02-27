@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Canvas2 animering</title>
+
+    <style>
+        body {
+            background-color: rgb(0, 0, 0);
+        }
+        
+        canvas {
+            width: 1000px;
+            height: 600px;
+            background-color: rgb(50, 50, 50);
+        }
+    </style>
+
+</head>
+
+
+<body>
+    <canvas width="1000" height="600"></canvas>
+
+
+    <div>
+        <button id="start">Start</button>
+        <button id="stop">Stop</button>
+    </div>
+
+
+    <script>
+        /* variabler  ______________________________________________*/
+
+
+        //skapar en variable för canvas elementet
+        const canvas = document.querySelector("canvas");
+
+        //ange en variable för canvas innehåll
+        const ctx = canvas.getContext("2d");
+
+
+        //Start knapp
+
+        const startButton = document.querySelector("#start");
+
+
+        //stopp knapp
+
+        const stopButton = document.querySelector("#stop");
+
+        //frame
+        let frameId = 0;
+
+        //variable för poäng
+
+        let score = 0;
+
+
+        //variabel (vector ) för att spara alla cirklar som skapas
+
+        let circles = [];
+
+
+
+        //Skapa en ny cirkel
+
+
+        let circle = new Circle(200, 200);
+        circles.push(circle);
+
+        let circle2 = new Circle(350, 350);
+        //circle2.draw();
+
+        //300 och 230 anger position för fyrkanten inte storlek
+        let rec = new Fyrkant(300, 230);
+        //ritar ut cirkeln rec.draw();
+
+
+
+
+        /*
+        Händelselyssnare
+        _____________________________________*/
+
+
+        startButton.addEventListener("click", function() {
+
+
+            this.setAttribute("disabled", "disabeled")
+
+            nextFrame();
+            spawnCircles(10);
+
+        })
+
+
+        stopButton.addEventListener("click", function() {
+            cancelAnimationFrame(frameId);
+            startButton.removeAttribute("disabled")
+
+
+        })
+
+
+
+        canvas.addEventListener("click", function(lyssnare) {
+
+            let mouse = getMousePosition(lyssnare);
+
+            //Antropa en funktion som kontrollerar om en cirkel klickades
+
+            detectCircleClick(mouse);
+
+
+
+            /* RIta in en fyrkant på skärmen som är en konstruktor
+            let fyrkant = new Fyrkant(lyssnare.clientX, lyssnare.clientY);
+
+            fyrkant.draw();*/
+
+
+
+        });
+
+
+        // Funktioner
+        /*___________________________________________________________________________________*/
+
+        //få webbläsaren att updateras ofta
+        function nextFrame() {
+            frameId = requestAnimationFrame(nextFrame);
+
+            //raderar innehållet i canvas elementet för varje frame
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+
+            //anropar move funktionen för att få figurerna att flytta på sig
+
+            rec.move1();
+
+
+            showScore();
+
+            renderCircles();
+            detectCircleCollision();
+            handleCircleStatus();
+        }
+
+        //funktion för att visa antal poäng
+
+        function showScore() {
+            ctx.beginPath();
+            ctx.font = "100px Arial";
+            ctx.textAlign = "center";
+            ctx.fillStyle = "white"
+            ctx.fillText(score, canvas.width / 2, canvas.height / 3);
+
+        }
+
+        //funktion för att rendera cirklar
+        function renderCircles() {
+
+            //itererar alla cirklar med en forloop
+            for (var i = 0; i < circles.length; i++) {
+                circles[i].move();
+            }
+
+        }
+
+
+        //funktion för att hantera musklick på criclar
+
+        function detectCircleClick(mouse) {
+
+            let dy, dx, distance
+
+            //loopa alla cirklar
+
+            for (var i = 0; i < circles.length; i++) {
+
+                //med hjälp utav pytagroasats
+                dx = mouse.x - circles[i].x;
+                dy = mouse.y - circles[i].y;
+                distance = Math.sqrt(dx * dx + dy * dy);
+
+                // Vilkor 
+
+                if (distance < circles[i].radius) {
+
+                    //ändra färg på crikeln
+
+                    circles[i].color = "green";
+                    score += 1;
+
+
+                }
+            }
+        }
+
+
+
+        //Funktion för att hantera cirklar som överlappar varandra.
+        function detectCircleCollision() {
+
+            let dx, dy, distance, overlap;
+
+            //loopa alla cirklar
+
+            for (let i = 0; i < circles.length; i++) {
+
+
+                //loopar alla cirklar igen för att se om aktuell cirkel överlappar en annan circel
+                for (let j = 0; j < circles.length; j++) {
+
+                    //om samma cirkel
+
+                    if (i === j) {
+                        continue;
+                    }
+
+                    //kontroll med hjälp av pytagora sats
+                    dx = circles[i].x - circles[j].x;
+                    dy = circles[i].y - circles[j].y;
+                    distance = Math.sqrt(dx * dx + dy * dy);
+
+                    //ciklarna överlappar varandra när summan av radierna är större än avståndet 
+                    if (distance < circles[i].radius + circles[j].radius) {
+
+                        // med hur mycket avlappar cirklarna varandra.
+                        overlap = circles[i].radius + circles[j].radius - distance;
+                        console.log("overlap", overlap);
+
+                        //flytta isär cirklarna
+                        circles[j].x += overlap;
+                        circles[j].y += overlap;
+
+                        //Markera cirklar som är utanför canvas
+                        if (circles[j].x + circles[j].radius > canvas.width ||
+                            circles[j].y + circles[j].radius > canvas.height) {
+                            circles[j].status = "remove";
+
+                        }
+                    }
+
+
+                }
+
+            }
+
+
+        }
+
+        //funktion som hanterar cirklars status.
+        function handleCircleStatus() {
+
+            //loopa alla cirklar i omvändordning eftersom medtod tar bort och påverkar cirklar i index i en array
+            for (let i = circles.length - 1; i >= 0; i--) {
+
+                // se om en cirkel har egenskapen "status"
+                if (circles[i].hasOwnProperty("status")) {
+
+                    if (circles[i].status === "remove") {
+
+                        //tar bort cirkel
+
+                        circles.splice(i, 1);
+                    }
+                }
+            }
+        }
+
+
+        function getMousePosition(lyssnare) {
+
+            let canvasRectangle = canvas.getBoundingClientRect();
+
+            return {
+                x: lyssnare.clientX - canvasRectangle.left,
+                y: lyssnare.clientY - canvasRectangle.top
+            };
+        }
+
+        //funktion för att slumpa fram en hastighet. -1 till 1.
+        function getRandomVelocity() {
+            var velocity = Math.random();
+            velocity = velocity < 0.2 ? 0.2 : velocity;
+
+            let direction = Math.random();
+
+            //retunerar hastigheten
+            return direction < 0.5 ? -velocity : velocity;
+        }
+        //funktion för att skapa nya cirklar
+        function spawnCircles(number) {
+
+            for (var i = 0; i < number; i++) {
+
+                let vx = getRandomVelocity();
+                let vy = getRandomVelocity();
+
+                let circle = new Circle(canvas.width / 2, canvas.height / 2, 20, vx, vy);
+                circles.push(circle);
+            }
+
+        }
+
+        function getRandomRadius() {
+            let random = Math.random();
+
+            //retunera ett tal mellan 5 och 30
+
+            random *= 50;
+
+
+            //If och else statment 
+            return random < 5 ? 5 : Math.ceil(random);
+        }
+
+
+
+
+        //en konstruktorfunktion för att skapa cirklar
+
+        function Circle(x, y, radius, vx, vy) {
+            this.x = x;
+            this.y = y;
+            this.vx = vx || 1;
+            this.vy = vy || 1;
+            this.radius = radius || 10;
+            this.color = "yellow";
+            this.draw = function() {
+                ctx.beginPath();
+                ctx.fillStyle = this.color;
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+                ctx.fill();
+            }
+            this.move = function() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Se till att cirklarna finns innanför canvas elementet
+                if (this.x - this.radius < 0 || this.x + this.radius > canvas.width) {
+                    this.vx = -this.vx
+                }
+
+                if (this.y - this.radius < 0 || this.y + this.radius > canvas.height) {
+                    this.vy = -this.vy
+                }
+
+                this.draw();
+            }
+        }
+
+        function Fyrkant(a, b) {
+            this.a = a;
+            this.b = b;
+            this.va = 1;
+            this.vb = 1;
+            this.color = "brown";
+            this.draw = function() {
+                ctx.beginPath();
+                ctx.fillStyle = this.color;
+                //anger storleken på fyrkanten
+                ctx.rect(this.a, this.b, 20, 20, true);
+                ctx.fill();
+            }
+            this.move1 = function() {
+                this.a -= this.va;
+                this.b -= this.vb;
+
+                //få fyrkanten att studsa
+
+                if (this.a < 0 || this.a > canvas.width) {
+                    this.va = -this.va
+                };
+
+                if (this.b < 0 || this.b > canvas.height) {
+                    this.vb = -this.vb
+
+                };
+
+                //Ritar ut cirkeln när man trycker på start this.draw();
+            }
+        }
+    </script>
+
+
+</body>
+
+</html>
