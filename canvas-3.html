@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Canvas2 animering</title>
 
-
+    <script src="circle-collision.js"></script>
 
     <style>
         body {
@@ -235,11 +235,15 @@
 
                         // med hur mycket avlappar cirklarna varandra.
                         overlap = circles[i].radius + circles[j].radius - distance;
-                        console.log("overlap", overlap);
+                        // console.log("overlap", overlap);
 
                         //flytta isär cirklarna
-                        circles[j].x += overlap;
-                        circles[j].y += overlap;
+                        //circles[j].x += overlap;
+                        // circles[j].y += overlap;
+
+
+                        handleCirclesOverlap(circles[i], circles[j], distance);
+                        handleCirclesCollision(circles[i], circles[j]);
 
                         //Markera cirklar som är utanför canvas
                         if (circles[j].x + circles[j].radius > canvas.width ||
