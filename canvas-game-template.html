@@ -10,7 +10,7 @@
         body {
             background-color: rgb(0, 0, 0);
         }
-
+        
         canvas {
             width: 1000px;
             height: 600px;
@@ -31,9 +31,8 @@
 
 
     <script>
-        
         /* variabler
-        _______________________________________*/
+                                                                _______________________________________*/
 
         // ange en variabel för canvas elementet
         const canvas = document.querySelector("canvas");
@@ -50,25 +49,38 @@
         // aktuell frame i animationen
         let frameId = 0;
 
+        /*______Hantera Tagenbortet_______________*/
+
+        var keyboard = {};
+
+        //Ange förvalda egenskaper
+
+        keyboard.up = false;
+        keyboard.down = false;
+        keyboard.right = false;
+        keyboard.left = false;
+
 
 
         /* händelselyssnare
         __________________________________________*/
 
-        startButton.addEventListener("click", function () {
+        startButton.addEventListener("click", function() {
             this.setAttribute("disabled", "disabeled");
             nextFrame();
         })
 
-        stopButton.addEventListener("click", function () {
+        stopButton.addEventListener("click", function() {
             cancelAnimationFrame(frameId);
             startButton.removeAttribute("disabled");
         })
 
-        canvas.addEventListener("click", function (event) {
+        canvas.addEventListener("click", function(event) {
             let mouse = getMousePosition(event);
         });
 
+        document.addEventListener("keydown", getKeyDown, false);
+        document.addEventListener("keyup", getKeyUp, false);
 
 
 
@@ -122,6 +134,46 @@
             let number = Math.random() * (max - min + 1) + min;
             return Math.floor(number);
         }
+
+        function getKeyDown(event) {
+            //console.log(event);
+            if (event.code === "ArrowDown") {
+                keyboard.down = true;
+
+            }
+            if (event.code === "ArrowUp") {
+                keyboard.up = true;
+            }
+
+            if (event.code === "ArrowLeft") {
+                keyboard.left = true;
+            }
+
+            if (event.code === "ArrowRight") {
+                keyboard.right = true;
+            }
+            console.log(keyboard);
+        };
+
+
+        function getKeyUp(event) {
+            // console.log(event);
+            if (event.code === "ArrowDown") {
+                keyboard.down = false;
+
+            }
+            if (event.code === "ArrowUp") {
+                keyboard.up = false;
+            }
+
+            if (event.code === "ArrowLeft") {
+                keyboard.left = false;
+            }
+
+            if (event.code === "ArrowRight") {
+                keyboard.right = false;
+            }
+        };
     </script>
 
 </body>
