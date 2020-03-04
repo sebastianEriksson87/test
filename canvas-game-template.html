@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Canvas animations template</title>
+    <style>
+        body {
+            background-color: rgb(0, 0, 0);
+        }
+
+        canvas {
+            width: 1000px;
+            height: 600px;
+            background-color: rgb(50, 50, 50);
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <canvas width="1000" height="600"></canvas>
+
+    <div>
+        <button id="start">Start</button>
+        <button id="stop">Stop</button>
+    </div>
+
+
+    <script>
+        
+        /* variabler
+        _______________________________________*/
+
+        // ange en variabel för canvas elementet
+        const canvas = document.querySelector("canvas");
+
+        // ange en variabel för canvas elementets innehåll
+        const ctx = canvas.getContext("2d");
+
+        // start knapp
+        const startButton = document.querySelector("#start");
+
+        // stop knapp
+        const stopButton = document.querySelector("#stop");
+
+        // aktuell frame i animationen
+        let frameId = 0;
+
+
+
+        /* händelselyssnare
+        __________________________________________*/
+
+        startButton.addEventListener("click", function () {
+            this.setAttribute("disabled", "disabeled");
+            nextFrame();
+        })
+
+        stopButton.addEventListener("click", function () {
+            cancelAnimationFrame(frameId);
+            startButton.removeAttribute("disabled");
+        })
+
+        canvas.addEventListener("click", function (event) {
+            let mouse = getMousePosition(event);
+        });
+
+
+
+
+
+        /* funktioner
+        ___________________________________________*/
+
+        /**
+         * Funktion för gameloop 
+         *
+         */
+        function nextFrame() {
+
+            // använd requestAnimationFrame()
+            frameId = requestAnimationFrame(nextFrame);
+
+            // radera pixlar som finns i canvas elementet
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // tangentbord och mus
+
+            // logik
+
+            // rendera
+
+        }
+
+        /**
+         * Funktion för musposition
+         *
+         * @param {object} event
+         * @returns object
+         */
+        function getMousePosition(event) {
+
+            let canvasRectangle = canvas.getBoundingClientRect();
+            return {
+                x: event.clientX - canvasRectangle.left,
+                y: event.clientY - canvasRectangle.top
+            };
+        }
+
+        /**
+         * Funktion för att slumpa heltal
+         *
+         * @param {number} min
+         * @param {number} max
+         * @returns number
+         */
+        function getRandomBetween(min, max) {
+            let number = Math.random() * (max - min + 1) + min;
+            return Math.floor(number);
+        }
+    </script>
+
+</body>
+
+</html>
