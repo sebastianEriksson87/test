@@ -83,7 +83,7 @@
 
 
         //skriv en instruktion till spelet
-        showMessage("CrikelKlick", "Klicka startkanppen och klicka cirklar")
+        showMessage("CrikelKlick  ", "Klicka startkanppen och klicka cirklar")
 
 
 
@@ -149,12 +149,26 @@
 
             rec.move1();
 
+            // hantera användarens - tagenbord, mus
 
-            showScore();
 
-            renderCircles();
+            // hantera logik
             detectCircleCollision();
             handleCircleStatus();
+
+            //rendera spelet - visa grafik
+            showScore();
+            renderCircles();
+            checkGameStatus();
+        }
+
+        function checkGameStatus() {
+            if (score < 5) {
+                return;
+            }
+            cancelAnimationFrame(frameId);
+            showMessage("Nivå avklarad!", " du har klickat på 5 cirklar!");
+
         }
 
         //funktion för att visa antal poäng
