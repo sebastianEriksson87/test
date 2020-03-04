@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Canvas2 animering</title>
+    <title>Canvas3 animering</title>
 
     <script src="circle-collision.js"></script>
 
@@ -82,6 +82,10 @@
         //ritar ut cirkeln rec.draw();
 
 
+        //skriv en instruktion till spelet
+        showMessage("CrikelKlick", "Klicka startkanppen och klicka cirklar")
+
+
 
 
         /*
@@ -156,11 +160,23 @@
         //funktion för att visa antal poäng
 
         function showScore() {
-            ctx.beginPath();
             ctx.font = "100px Arial";
             ctx.textAlign = "center";
             ctx.fillStyle = "white"
             ctx.fillText(score, canvas.width / 2, canvas.height / 3);
+
+        }
+
+
+        function showMessage(heading, text) {
+            ctx.font = "100px Arial";
+            ctx.textAlign = "center";
+            ctx.fillStyle = "white"
+            ctx.fillText(heading, canvas.width / 2, canvas.height / 2, canvas.width - 100);
+            ctx.font = "50px Arial";
+            ctx.fillText(text, canvas.width / 2, canvas.height * 2 / 3, canvas.width - 100));
+
+
 
         }
 
