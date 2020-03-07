@@ -32,7 +32,7 @@
 
     <script>
         /* variabler
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                        _______________________________________*/
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        _______________________________________*/
 
         // ange en variabel för canvas elementet
         const canvas = document.querySelector("canvas");
@@ -92,9 +92,9 @@
 
         player.draw();
 
+        //Musik för spelet.
 
         let music = new Sound("rain.mp3")
-        music.play();
 
 
 
@@ -104,6 +104,7 @@
         startButton.addEventListener("click", function() {
             this.setAttribute("disabled", "disabeled");
             nextFrame();
+            music.play();
         })
 
         stopButton.addEventListener("click", function() {
@@ -222,7 +223,7 @@
             this.audio = document.createElement("audio");
             this.audio.src = src;
             this.audio.setAttribute("preload", "auto");
-            this.audio.setAttribute("controls", "controls");
+            // this.audio.setAttribute("controls", "controls");
             document.body.append(this.audio);
             this.play = function() {
                 this.audio.play();
