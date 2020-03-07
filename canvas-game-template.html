@@ -32,7 +32,7 @@
 
     <script>
         /* variabler
-                                                                                                                                                                                                                                                                                                                                                                                                        _______________________________________*/
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                        _______________________________________*/
 
         // ange en variabel för canvas elementet
         const canvas = document.querySelector("canvas");
@@ -91,6 +91,10 @@
         }
 
         player.draw();
+
+
+        let music = new Sound("rain.mp3")
+        music.play();
 
 
 
@@ -212,6 +216,21 @@
             }
             console.log(keyboard);
         };
+
+        //en konstrukturfunktion för att ljudspel. 
+        function Sound(src) {
+            this.audio = document.createElement("audio");
+            this.audio.src = src;
+            this.audio.setAttribute("preload", "auto");
+            this.audio.setAttribute("controls", "controls");
+            document.body.append(this.audio);
+            this.play = function() {
+                this.audio.play();
+            }
+            this.pause = function() {
+                this.audio.pause();
+            }
+        }
     </script>
 
 </body>
