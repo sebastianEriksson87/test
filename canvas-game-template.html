@@ -32,7 +32,7 @@
 
     <script>
         /* variabler
-                                                                _______________________________________*/
+                                                                                                                                                                                                                                                                                                                                                                                                        _______________________________________*/
 
         // ange en variabel för canvas elementet
         const canvas = document.querySelector("canvas");
@@ -59,6 +59,38 @@
         keyboard.down = false;
         keyboard.right = false;
         keyboard.left = false;
+
+        let player = {};
+        player.x = canvas.width / 2;
+        player.y = canvas.height / 2;
+        player.vx = 5;
+        player.vy = 5;
+
+        player.draw = function() {
+
+            ctx.beginPath();
+            ctx.fillStyle = "blue";
+            ctx.arc(player.x, player.y, 35, 0, Math.PI, false);
+            ctx.fill();
+        }
+
+        player.move = function() {
+            if (keyboard.up) {
+                player.y -= player.vy;
+            }
+            if (keyboard.down) {
+                player.y += player.vy;
+            }
+            if (keyboard.right) {
+                player.x += player.vx;
+            }
+            if (keyboard.left) {
+                player.x -= player.vx;
+            }
+            player.draw();
+        }
+
+        player.draw();
 
 
 
@@ -97,6 +129,7 @@
             // använd requestAnimationFrame()
             frameId = requestAnimationFrame(nextFrame);
 
+
             // radera pixlar som finns i canvas elementet
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -105,8 +138,10 @@
             // logik
 
             // rendera
+            player.move();
 
-        }
+
+        };
 
         /**
          * Funktion för musposition
@@ -136,7 +171,7 @@
         }
 
         function getKeyDown(event) {
-            //console.log(event);
+            //  console.log(event);
             if (event.code === "ArrowDown") {
                 keyboard.down = true;
 
@@ -156,23 +191,26 @@
         };
 
 
+
+
         function getKeyUp(event) {
-            // console.log(event);
+            //  console.log(event);
             if (event.code === "ArrowDown") {
-                keyboard.down = false;
+                keyboard.down = true;
 
             }
             if (event.code === "ArrowUp") {
-                keyboard.up = false;
+                keyboard.up = true;
             }
 
             if (event.code === "ArrowLeft") {
-                keyboard.left = false;
+                keyboard.left = true;
             }
 
             if (event.code === "ArrowRight") {
-                keyboard.right = false;
+                keyboard.right = true;
             }
+            console.log(keyboard);
         };
     </script>
 
